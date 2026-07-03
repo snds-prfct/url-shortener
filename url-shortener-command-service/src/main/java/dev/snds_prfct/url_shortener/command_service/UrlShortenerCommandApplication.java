@@ -1,4 +1,4 @@
-package dev.snds_prfct.url_shortener_command_service;
+package dev.snds_prfct.url_shortener.command_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

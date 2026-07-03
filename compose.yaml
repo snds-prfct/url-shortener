@@ -1,0 +1,91 @@
+services:
+
+  postgres:
+    image: postgres:17.5-alpine
+    hostname: postgres
+    container_name: postgres
+    ports:
+      - "54321:5432"
+    networks:
+      - url-shortener
+    environment:
+      POSTGRES_USER: "${DB_USERNAME}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_DB: short-urls
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 300M
+        reservations:
+          cpus: '0.25'
+          memory: 100M
+
+  redis:
+    image: redis:8.8.0
+    hostname: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - url-shortener
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 500M
+        reservations:
+          cpus: '0.25'
+          memory: 250M
+
+  url-shortener-command-service:
+    image: snds_prfct/url-shortener-command-service:0.1
+    build: url-shortener-command-service/
+    container_name: url-shortener-command-service
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - url-shortener
+    environment:
+      DATABASE_BASE_URL: jdbc:postgresql://postgres
+      DATABASE_NAME: short-urls
+      DATABASE_USERNAME: "${DB_USERNAME}"
+      DATABASE_PASSWORD: "${DB_PASSWORD}"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.25'
+          memory: 200M
+
+  url-shortener-query-service:
+    image: snds_prfct/url-shortener-query-service:0.1
+    build: url-shortener-query-service/
+    container_name: url-shortener-query-service
+    depends_on:
+      - postgres
+    ports:
+      - "8081:8080"
+    networks:
+      - url-shortener
+    environment:
+      DATABASE_BASE_URL: jdbc:postgresql://postgres
+      DATABASE_NAME: short-urls
+      DATABASE_USERNAME: "${DB_USERNAME}"
+      DATABASE_PASSWORD: "${DB_PASSWORD}"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.25'
+          memory: 200M
+
+networks:
+  url-shortener:
+    driver: bridge

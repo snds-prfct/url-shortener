@@ -1,3 +1,18 @@
 spring:
   application:
     name: url-shortener-command-service
+
+  mvc:
+    servlet:
+      path: /api
+
+  datasource:
+    url: ${DATABASE_BASE_URL}/${DATABASE_NAME}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: none
+  sql:
+    init:
+      mode: never

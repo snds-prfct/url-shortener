@@ -1,4 +1,4 @@
-package dev.snds_prfct.url_shortener_query_service;
+package dev.snds_prfct.url_shortener.query_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

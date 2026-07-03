@@ -10,7 +10,7 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>dev.snds-prfct</groupId>
+	<groupId>dev.snds-prfct.url-shortener</groupId>
 	<artifactId>url-shortener-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
