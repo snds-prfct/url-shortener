@@ -3,3 +3,5 @@
 ## Technologies and Tools
 - Java 25
 - Spring Boot 4
+- Redis
+- PostgreSQL
