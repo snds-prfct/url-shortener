@@ -53,6 +53,8 @@ services:
       DATABASE_NAME: short-urls
       DATABASE_USERNAME: "${DB_USERNAME}"
       DATABASE_PASSWORD: "${DB_PASSWORD}"
+      FLYWAY_USER: "${DB_FLYWAY_USERNAME}"
+      FLYWAY_PASSWORD: "${DB_FLYWAY_PASSWORD}"
     deploy:
       resources:
         limits:
