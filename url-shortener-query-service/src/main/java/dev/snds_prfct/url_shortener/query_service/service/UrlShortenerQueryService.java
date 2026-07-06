@@ -11,6 +11,6 @@ public class UrlShortenerQueryService {
     private final ShortUrlRepository shortUrlRepository;
 
     public String findLongUrl(String shortUrl) {
-        return null;
+        return shortUrlRepository.findLongUrlByShortUrl(shortUrl);
     }
 }
