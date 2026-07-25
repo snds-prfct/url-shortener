@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: url-shortener-api-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: command_service_route
+              uri: http://${COMMAND_SERVICE}:${COMMAND_SERVICE_PORT}
+              predicates:
+                - Path=/short
+                - Method=POST
+              filters:
+                - RewritePath=/short,/api/short
+            - id: query_service_route
+              uri: http://${QUERY_SERVICE}:${QUERY_SERVICE_PORT}
+              predicates:
+                - Path=/*
+                - Method=GET
+              filters:
+                - RewritePath=/(?<code>.*),/api/${code}

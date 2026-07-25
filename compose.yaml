@@ -38,23 +38,19 @@ services:
           cpus: '0.25'
           memory: 250M
 
-  url-shortener-command-service:
-    image: snds_prfct/url-shortener-command-service:0.1
-    build: url-shortener-command-service/
-    container_name: url-shortener-command-service
-    depends_on:
-      - postgres
+  url-shortener-api-gateway:
+    image: snds_prfct/url-shortener-api-gateway:0.1
+    build: url-shortener-api-gateway/
+    container_name: url-shortener-api-gateway
     ports:
       - "8080:8080"
     networks:
       - url-shortener
     environment:
-      DATABASE_BASE_URL: jdbc:postgresql://postgres
-      DATABASE_NAME: short-urls
-      DATABASE_USERNAME: "${DB_USERNAME}"
-      DATABASE_PASSWORD: "${DB_PASSWORD}"
-      FLYWAY_USER: "${DB_FLYWAY_USERNAME}"
-      FLYWAY_PASSWORD: "${DB_FLYWAY_PASSWORD}"
+      QUERY_SERVICE: url-shortener-query-service
+      QUERY_SERVICE_PORT: 8080
+      COMMAND_SERVICE: url-shortener-command-service
+      COMMAND_SERVICE_PORT: 8080
     deploy:
       resources:
         limits:
@@ -79,6 +75,32 @@ services:
       DATABASE_NAME: short-urls
       DATABASE_USERNAME: "${DB_USERNAME}"
       DATABASE_PASSWORD: "${DB_PASSWORD}"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
+        reservations:
+          cpus: '0.25'
+          memory: 200M
+
+  url-shortener-command-service:
+    image: snds_prfct/url-shortener-command-service:0.1
+    build: url-shortener-command-service/
+    container_name: url-shortener-command-service
+    depends_on:
+      - postgres
+    ports:
+      - "8082:8080"
+    networks:
+      - url-shortener
+    environment:
+      DATABASE_BASE_URL: jdbc:postgresql://postgres
+      DATABASE_NAME: short-urls
+      DATABASE_USERNAME: "${DB_USERNAME}"
+      DATABASE_PASSWORD: "${DB_PASSWORD}"
+      FLYWAY_USER: "${DB_FLYWAY_USERNAME}"
+      FLYWAY_PASSWORD: "${DB_FLYWAY_PASSWORD}"
     deploy:
       resources:
         limits:
