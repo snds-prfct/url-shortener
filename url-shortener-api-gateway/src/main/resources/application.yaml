@@ -13,6 +13,7 @@ spring:
                 - Method=POST
               filters:
                 - RewritePath=/short,/api/short
+
             - id: query_service_route
               uri: http://${QUERY_SERVICE}:${QUERY_SERVICE_PORT}
               predicates:

@@ -14,7 +14,6 @@ import java.net.URI;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(exception = UrlNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleUrlNotFoundException(UrlNotFoundException urlNotFoundException, HttpServletRequest request) {
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatusCode.valueOf(404));
@@ -25,8 +24,9 @@ public class GlobalExceptionHandler {
                 .body(problemDetail);
     }
 
+    @ExceptionHandler(exception = Exception.class)
     public ResponseEntity<ProblemDetail> handleException(Exception exception, WebRequest webRequest) {
-        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatusCode.valueOf(404));
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatusCode.valueOf(500));
         problemDetail.setTitle("Something went wrong on our end");
         problemDetail.setInstance(URI.create(webRequest.getContextPath()));
         return ResponseEntity
