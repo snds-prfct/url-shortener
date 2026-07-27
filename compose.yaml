@@ -66,6 +66,7 @@ services:
     container_name: url-shortener-query-service
     depends_on:
       - postgres
+      - redis
     ports:
       - "8081:8080"
     networks:
@@ -75,6 +76,8 @@ services:
       DATABASE_NAME: short-urls
       DATABASE_USERNAME: "${DB_USERNAME}"
       DATABASE_PASSWORD: "${DB_PASSWORD}"
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     deploy:
       resources:
         limits:

@@ -4,17 +4,35 @@ import dev.snds_prfct.url_shortener.query_service.entity.ShortUrl;
 import dev.snds_prfct.url_shortener.query_service.exception.UrlNotFoundException;
 import dev.snds_prfct.url_shortener.query_service.repository.ShortUrlRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+
+import static dev.snds_prfct.url_shortener.query_service.redis.CachePrefixes.SHORT_URL_PREFIX;
 
 @Service
 @RequiredArgsConstructor
 public class UrlShortenerQueryService {
 
     private final ShortUrlRepository shortUrlRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public String findLongUrl(String shortUrl) {
-        return shortUrlRepository.findLongUrlByShortUrl(shortUrl)
+        String longUrlFromCache = redisTemplate.opsForValue()
+                .get(String.format(SHORT_URL_PREFIX.formatted(shortUrl)));
+
+        if (longUrlFromCache != null) {
+            return longUrlFromCache;
+        }
+
+        String longUrlFromDb = shortUrlRepository.findLongUrlByShortUrl(shortUrl)
                 .map(ShortUrl::getLongUrl)
-                .orElseThrow(() -> new UrlNotFoundException());
+                .orElseThrow(UrlNotFoundException::new);
+
+        redisTemplate.opsForValue()
+                .set(SHORT_URL_PREFIX.formatted(shortUrl), longUrlFromDb, Duration.ofDays(30));
+
+        return longUrlFromDb;
     }
 }
